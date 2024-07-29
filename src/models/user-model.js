@@ -22,6 +22,11 @@ const userSchema = new mongoose.Schema({
     unique: true,
     match: [/.+@.+\..+/, 'Please enter a valid email address'],
   },
+  password: {
+    type: String,
+    required: [true, 'Password is required'],
+    select: false, // Ensure password is excluded by default
+  },
   role: {
     type: String,
     enum: ['customer', 'admin'],
@@ -30,29 +35,29 @@ const userSchema = new mongoose.Schema({
   },
   address: [
     {
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"addresses",
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "addresses",
     }
   ],
-  paymentInformation:[
+  paymentInformation: [
     {
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"payment_information"
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "payment_information"
     }
   ],
-  ratings:[
+  ratings: [
     {
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"ratings"  
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ratings"
     }
   ],
-  reviews:[
+  reviews: [
     {
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"reviews"  
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "reviews"
     }
   ],
 }, { timestamps: true });
 
- const User= mongoose.model('users', userSchema);
- module.exports=User;
+const User = mongoose.model('User', userSchema);
+module.exports = User;
