@@ -1,61 +1,59 @@
 const Address = require('../../models/address-model');
-const Cart = require('../../models/cart-model');
-const CartItem = require('../../models/cartitem-model');
 const Order = require('../../models/order-model');
 const OrderItem = require('../../models/orderitem-model');
-const userService = require('../user-services');
-const cartService = require('../cart-services');
+const thirdCartService = require("../cart-services/findUserCart");
 
 async function createOrder(user, shippingAddress) {
-    let address;
+    try {
+        let address;
 
-    // Check if shipping address already exists
-    if (shippingAddress._id) {
-        let existAddress = await Address.findById(shippingAddress._id);
-        address = existAddress;
-    } else {
-        // Create a new address if it does not exist
-        address = new Address(shippingAddress);
-        address.user = user;
-        await address.save();
+        // Check if shipping address already exists
+        if (shippingAddress._id) {
+            address = await Address.findById(shippingAddress._id);
+        } else {
+            // Create a new address if it does not exist
+            address = new Address(shippingAddress);
+            address.user = user._id;
+            await address.save();
+        }
 
-        // Add the new address to the user's addresses
-        user.addresses.push(address);
-        await user.save();
-    }
+        // Find the user's cart
+        const cart = await thirdCartService.findUserCart(user._id);
+        if (!cart) {
+            throw new Error('Cart not found for user');
+        }
 
-    // Find the user's cart
-    const cart = await cartService.findUserCart(user._id);
-    const orderItems = [];
+        // Create order items from cart items
+        const orderItems = await Promise.all(cart.cartItems.map(async (cartItem) => {
+            const orderItem = new OrderItem({
+                product: cartItem.product,
+                quantity: cartItem.quantity,
+                price: cartItem.price,
+                discountedPrice: cartItem.discountedPrice,
+                size: cartItem.size,
+                userId: user._id
+            });
+            return await orderItem.save();
+        }));
 
-    // Loop through each cart item to create corresponding order items
-    for (const item of cart.cartItems) {
-        const orderItem = new OrderItem({
-            price: item.price,
-            product: item.product,
-            quantity: item.quantity,
-            size: item.size,
-            userId: item.userId,
-            discountedPrice: item.discountedPrice,
+        // Create the order
+        const order = new Order({
+            user: user._id,
+            orderItems: orderItems.map(item => item._id),
+            shippingAddress: address._id,
+            totalPrice: cart.totalPrice,
+            totalDiscountedPrice: cart.totalDiscountedPrice,
+            discount: cart.discount,
+            totalItem: cart.totalItem,
+            orderStatus: 'PENDING'
         });
 
-        const createdOrderItem = await orderItem.save();
-        orderItems.push(createdOrderItem);
+        const savedOrder = await order.save();
+        return savedOrder;
+    } catch (error) {
+        console.error("Error creating order: ", error);
+        throw error;
     }
-
-    // Create the order
-    const createdOrder = new Order({
-        user,
-        orderItems,
-        totalPrice: cart.totalPrice,
-        totalDiscountedPrice: cart.totalDiscountedPrice,
-        discount: cart.totalPrice - cart.totalDiscountedPrice,
-        totalItem: cart.totalItem,
-        shippingAddress: address,
-    });
-
-    const savedOrder = await createdOrder.save();
-    return savedOrder;
 }
 
 module.exports = { createOrder };

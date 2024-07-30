@@ -1,13 +1,14 @@
 const Cart = require("../../models/cart-model");
 const CartItem = require('../../models/cartitem-model');
 
-
 async function findUserCart(userId) {
   try {
       // Find the cart for the user
-      const cart = await Cart.findOne({ user: userId });
+      let cart = await Cart.findOne({ user: userId });
       if (!cart) {
-          throw new Error('Cart not found');
+          // Initialize a new cart if not found
+          cart = new Cart({ user: userId });
+          await cart.save();
       }
 
       // Find the cart items for the cart
@@ -21,15 +22,19 @@ async function findUserCart(userId) {
 
       // Calculate totals
       for (let cartItem of cart.cartItems) {
-          totalPrice += cartItem.price;
-          totalDiscountedPrice += cartItem.discountedPrice;
+          totalPrice += cartItem.product.price * cartItem.quantity;
+          totalDiscountedPrice += cartItem.product.discountedPrice * cartItem.quantity;
           totalItem += cartItem.quantity;
       }
 
       // Update cart with totals
       cart.totalPrice = totalPrice;
+      cart.totalDiscountedPrice = totalDiscountedPrice;
       cart.totalItem = totalItem;
       cart.discount = totalPrice - totalDiscountedPrice;
+
+      // Save the updated cart
+      await cart.save();
 
       // Return the cart with updated values
       return cart;

@@ -1,5 +1,5 @@
 const userService = require('../user-services');
-const { findCartItemById }=require("./UpdateCartItem");
+const { findCartItemById }=require("./findCartItemById");
 //Increasing number of products of an item
 async function updateCartItem(userId, cartItemId, cartItemData) {
     try {

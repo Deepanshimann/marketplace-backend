@@ -1,5 +1,6 @@
 const userService = require('../user-services');
 const CartItem = require('../../models/cartitem-model');
+const findCartItemById = require('./findCartItemById');
 
 async function removeCartItem(userId, cartItemId) {
     try {
@@ -29,18 +30,4 @@ async function removeCartItem(userId, cartItemId) {
     }
 }
 
-async function findCartItemById(cartItemId) {
-    try {
-        const cartItem = await CartItem.findById(cartItemId).populate('product');
-        if (cartItem) {
-            return cartItem;
-        } else {
-            throw new Error("Cart item not found with id: " + cartItemId);
-        }
-    } catch (error) {
-        console.error("Error finding cart item by ID:", error);
-        throw new Error(error.message);
-    }
-}
-
-module.exports = { removeCartItem, findCartItemById };
+module.exports = { removeCartItem };

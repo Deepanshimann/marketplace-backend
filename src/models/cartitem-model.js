@@ -13,7 +13,6 @@ const cartItemSchema = new mongoose.Schema({
     },
     size: {
         type: String,
-        required: true,
     },
     quantity: {
         type: Number,
@@ -22,11 +21,9 @@ const cartItemSchema = new mongoose.Schema({
     },
     price: {
         type: Number,
-        required: true,
     },
     discountedPrice: {
         type: Number,
-        required: true,
     },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
