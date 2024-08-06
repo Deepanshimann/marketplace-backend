@@ -7,7 +7,7 @@ const updateCartItem = async (req, res) => {
         const updatedCartItem = await firstCartService.updateCartItem(user._id, req.params.id, req.body);
         return res.status(200).send({
             updatedCartItem,
-            message: "Item added to cart successfully",
+            message: "Item updated to cart successfully",
         }
         )
     } catch (error) {

@@ -1,15 +1,21 @@
+// server.js or app.js (backend)
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require('body-parser');
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: 'http://localhost:5173' })); // Allow requests from the frontend running on port 5173
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
     res.send('Hello, World!');
+});
+
+// Test connection route
+app.get('/test', (req, res) => {
+  res.json({ success: true, message: 'Connection is successful!' });
 });
 
 // Routes
@@ -35,7 +41,7 @@ app.use("/api/reviews", reviewRouter);
 app.use("/api/ratings", ratingRouter);
 app.use("/api/admin/orders", adminOrderRouter);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3100;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

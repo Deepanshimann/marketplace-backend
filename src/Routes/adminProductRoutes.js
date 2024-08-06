@@ -8,7 +8,7 @@ console.log(productController);
 
 router.post("/", authenticate, productController.createProduct);
 router.post("/creates", authenticate, productController.createMultipleProducts);
-router.delete("/:id", authenticate, productController.deleteProduct);
+router.delete("/delete/:id", authenticate, productController.deleteProduct);
 router.put("/:id", authenticate, productController.updateProduct);
 
 module.exports = router;

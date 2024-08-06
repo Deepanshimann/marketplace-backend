@@ -1,26 +1,14 @@
-const userService = require("../services/user-services");
+const jwt = require('jsonwebtoken');
+const secret = 'your_jwt_secret'; // Ensure this matches the secret used in your backend
 
-const authenticate = async (req, res, next) => {
-    try {
-        const token = req.headers.authorization?.split(" ")[1];
-        if (!token) {
-            return res.status(404).send({ error: "Token not found..." });
-        }
+exports.authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  if (!token) return res.status(401).send({ success: false, message: 'Access token required' });
 
-        console.log("Token found:", token);
-
-        const user = await userService.getUserProfileByToken(token);
-
-        if (!user) {
-            return res.status(404).send({ error: "User not found..." });
-        }
-
-        req.user = user;
-        next();
-    } catch (error) {
-        console.error("Authentication error:", error);
-        return res.status(500).send({ error: error.message });
-    }
+  jwt.verify(token, secret, (err, user) => {
+    if (err) return res.status(403).send({ success: false, message: 'Invalid token' });
+    req.user = user;
+    next();
+  });
 };
-
-module.exports = authenticate;

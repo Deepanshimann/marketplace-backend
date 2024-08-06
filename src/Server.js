@@ -1,18 +1,49 @@
-const app = require("./App");
-const {connectDB} = require("./config/mongodb"); // Ensure this path is correct
-const PORT = 3100;
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
-connectDB().then(() => {
-  
-  app.listen(PORT, (err) => {
-    console.log('Connected to the database successfully');
-    if (err) {
-      console.error("Error starting the server:", err);
-    } else {
-      console.log(`Server is running on http://localhost:${PORT}`);
-    }
-  });
-}).catch(err => {
-  console.error("Failed to connect to the database:", err);
-  process.exit(1); // Exit the process with a failure code
+// Initialize the app
+const app = express();
+const port = 3100;
+
+// Middleware
+app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// MongoDB connection
+const mongoDBconnection = async () => {
+  const mongodbUrl = "mongodb+srv://deepanshimann96:ZeeK7uC8a317T6kz@cluster0.rgzxrs7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+  try {
+    await mongoose.connect(mongodbUrl, { useNewUrlParser: true, useUnifiedTopology: true });
+    console.log('Connected to MongoDB');
+  } catch (err) {
+    console.error('Failed to connect to MongoDB', err);
+  }
+};
+mongoDBconnection();
+
+// // Example login route
+// app.post('/auth/login', (req, res) => {
+//   const { email, password } = req.body;
+//   res.json({ success: true, token: 'example-jwt-token' });
+// });
+
+// // Example signup route
+// app.post('/auth/signup', (req, res) => {
+//   const { firstName, lastName, email, password, phoneNumber, role } = req.body;
+//   res.json({ success: true, message: 'Registration successful' });
+// });
+
+// Test connection route
+app.get('/test', (req, res) => {
+  res.json({ success: true, message: 'Connection is successful!' });
 });
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});
+
+module.exports = app;
