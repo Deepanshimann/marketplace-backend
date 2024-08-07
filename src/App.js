@@ -1,49 +1,47 @@
-// server.js or app.js (backend)
-const express = require("express");
-const cors = require("cors");
-const bodyParser = require('body-parser');
-const app = express();
+const express=require("express")
+const cors=require('cors');
 
-app.use(express.json());
-app.use(cors({ origin: 'http://localhost:5173' })); // Allow requests from the frontend running on port 5173
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+const app=express();
 
-app.get('/', (req, res) => {
-    res.send('Hello, World!');
-});
+app.use(express.json())
+app.use(cors())
 
-// Test connection route
-app.get('/test', (req, res) => {
-  res.json({ success: true, message: 'Connection is successful!' });
-});
+app.get("/",(req,res)=>{
+    return res.status(200).send({message:"welcome to ecommerce api - node"})
+})
 
-// Routes
-const authRoutes = require("./Routes/authRoutes");
-const userRoute = require("./Routes/userRoute");
-const customerProductRouter = require("./Routes/customerProductRoutes.js");
-const adminProductRouter = require("./Routes/adminProductRoutes.js");
-const cartRouter = require("./Routes/cartRoutes.js");
-const cartItemRouter = require("./Routes/cartItemRoutes.js");
-const orderRouter = require("./Routes/orderRoutes.js");
-const reviewRouter = require("./Routes/reviewRoute.js");
-const ratingRouter = require("./Routes/ratingRoutes.js");
-const adminOrderRouter = require("./Routes/adminOrderRoutes");
+const authRouter=require("./Routes/authRoutes.js")
+app.use("/auth",authRouter)
 
-app.use("/auth", authRoutes);
-app.use("/api/users", userRoute);
-app.use("/api/products", customerProductRouter);
-app.use("/api/admin/products", adminProductRouter);
+const userRouter=require("./Routes/userRoute.js");
+app.use("/api/users",userRouter)
+
+const productRouter=require("./Routes/customerProductRoutes");
+app.use("/api/products",productRouter);
+
+const adminProductRouter=require("./Routes/adminProductRoutes");
+app.use("/api/admin/products",adminProductRouter);
+
+const cartRouter=require("./Routes/cartRoutes.js")
 app.use("/api/cart", cartRouter);
-app.use("/api/cart_items", cartItemRouter);
-app.use("/api/orders", orderRouter);
-app.use("/api/reviews", reviewRouter);
-app.use("/api/ratings", ratingRouter);
-app.use("/api/admin/orders", adminOrderRouter);
 
-const PORT = process.env.PORT || 3100;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+const cartItemRouter=require("./Routes/cartItemRoutes.js")
+app.use("/api/cart_items",cartItemRouter);
 
-module.exports = app;
+const orderRouter=require("./Routes/orderRoutes.js");
+app.use("/api/orders",orderRouter);
+
+// const paymentRouter=require("./Routes/payment.routes.js");
+// app.use('/api/payments',paymentRouter)
+
+const reviewRouter=require("./Routes/reviewRoute.js");
+app.use("/api/reviews",reviewRouter);
+
+const ratingRouter=require("./Routes/ratingRoutes.js");
+app.use("/api/ratings",ratingRouter);
+
+// admin routes handler
+const adminOrderRoutes=require("./Routes/adminOrderRoutes");
+app.use("/api/admin/orders",adminOrderRoutes);
+
+module.exports={app};
