@@ -3,6 +3,7 @@ const Category = require('../../models/category-model');
 
 async function getAllProducts(reqQuery) {
     try {
+        return { content: await Product.find(), currentPage: 1, totalPages:5 };
         let { category, color, sizes, minPrice, maxPrice, minDiscount, sort, stock, pageNumber, pageSize } = reqQuery;
 
         pageSize = pageSize || 10;
@@ -58,8 +59,10 @@ async function getAllProducts(reqQuery) {
 
         const products = await query.exec();
         const totalPages = Math.ceil(totalProducts / pageSize);
+      
+console.log("..product.."+ await Product.find());
 
-        return { content: products, currentPage: pageNumber, totalPages };
+        return { content: await Product.find(), currentPage: pageNumber, totalPages };
     } 
     catch (error) {
         console.error("Error getting all products:", error);
