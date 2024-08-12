@@ -3,10 +3,10 @@ const userService = require("../services/user-services");
 
 const authenticate = async (req, res, next) => {
   const requestId = Math.random().toString(36).substring(7); // Unique identifier for each log entry
-  console.log(`[${requestId}] Authenticate middleware invoked`);
+  // console.log(`[${requestId}] Authenticate middleware invoked`);
 
   try {
-    console.log(`[${requestId}] Headers received:`, req.headers);
+    // console.log(`[${requestId}] Headers received:`, req.headers);
 
     const authorizationHeader = req.headers['authorization'];
     if (!authorizationHeader) {
@@ -20,12 +20,12 @@ const authenticate = async (req, res, next) => {
       return res.status(404).send({ message: "Token not found" });
     }
 
-    console.log(`[${requestId}] Token received:`, token);
+    // console.log(`[${requestId}] Token received:`, token);
 
     let userId;
     try {
       userId = jwtProvider.getUserIdFromToken(token);
-      console.log(`[${requestId}] Extracted user ID from token:`, userId);
+      // console.log(`[${requestId}] Extracted user ID from token:`, userId);
     } catch (error) {
       console.log(`[${requestId}] Failed to extract user ID from token:`, error.message);
       return res.status(401).send({ message: "Invalid token" });
@@ -39,7 +39,7 @@ const authenticate = async (req, res, next) => {
     let user;
     try {
       user = await userService.findUserById(userId);
-      console.log(`[${requestId}] User found:`, user);
+      // console.log(`[${requestId}] User found:`, user);
     } catch (error) {
       console.log(`[${requestId}] Error finding user by ID:`, error.message);
       return res.status(500).send({ message: `Error finding user with ID: ${userId}` });

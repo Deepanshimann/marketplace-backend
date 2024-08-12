@@ -1,6 +1,6 @@
 const userService = require('../user-services');
 const CartItem = require('../../models/cartitem-model');
-const findCartItemById = require('./findCartItemById');
+const {findCartItemById} = require('./findCartItemById');
 
 async function removeCartItem(userId, cartItemId) {
     try {

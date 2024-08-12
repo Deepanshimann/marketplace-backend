@@ -5,7 +5,10 @@ const User = require('../models/user-model');
 
 const createOrderController = async (req, res) => {
     try {
+        console.log("createOrderController called");
         const user = await User.findById(req.body.user);
+        console.log("createOrderController called");
+    console.log("Request body:", req.body);  
         if (!user) {
             return res.status(404).send({ error: 'User not found' });
         }
