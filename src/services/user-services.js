@@ -59,7 +59,7 @@ const findUserByEmail = async (email) => {
 const getUserProfileByToken = async (token) => {
   try {
     const userId = jwtProvider.getUserIdFromToken(token);
-    const user = await findUserById(userId);
+    const user= (await findUserById(userId)).populate("addresses");
 
     if (!user) {
       throw new Error(`User not found with id: ${userId}`);

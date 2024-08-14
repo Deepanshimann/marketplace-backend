@@ -10,16 +10,6 @@ const AddressSchema = new mongoose.Schema({
         type: String,
         trim: true,
     },
-    mobile: {
-        type: String,  // Changed to String to handle leading zeros
-        required: [true, 'Mobile number is required'],
-        match: [/^\d{10}$/, 'Please enter a valid 10-digit mobile number'],
-    },
-    email: {
-        type: String,
-        required: [true, 'Email is required'],
-        match: [/.+@.+\..+/, 'Please enter a valid email address'],
-    },
     street: {
         type: String,
         required: [true, 'Street is required'],

@@ -4,13 +4,16 @@ const Order = require('../../models/order-model');
 // Function to find an order by its ID
 async function findOrderById(orderId) {
     try {
+        console.log("findOrderById called with ID:", orderId);
         const order = await Order.findById(orderId)
             .populate("user")
             .populate({ path: "orderItems", populate: { path: "product" } })
             .populate("shippingAddress");
         if (order) {
+            console.log("Order found:", order);
             return order;
         } else {
+            console.error("Order not found with id:", orderId);
             throw new Error("Order not found with id: " + orderId);
         }
     } catch (error) {

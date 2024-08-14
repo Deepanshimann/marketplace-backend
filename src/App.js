@@ -3,7 +3,9 @@ const cors=require('cors');
 
 const app=express();
 
-app.use(express.json())
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.use(cors())
 
 app.get("/",(req,res)=>{
@@ -31,8 +33,8 @@ app.use("/api/cart_items",cartItemRouter);
 const orderRouter=require("./Routes/orderRoutes.js");
 app.use("/api/orders",orderRouter);
 
-// const paymentRouter=require("./Routes/payment.routes.js");
-// app.use('/api/payments',paymentRouter)
+const paymentRouter=require("./Routes/paymentRoutes");
+app.use('/api/payments',paymentRouter)
 
 const reviewRouter=require("./Routes/reviewRoute.js");
 app.use("/api/reviews",reviewRouter);

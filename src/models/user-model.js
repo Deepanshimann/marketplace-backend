@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema({
     default: 'customer',
     required: [true, 'Role is required'],
   },
-  address: [
+  addresses: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "addresses",
@@ -59,5 +59,5 @@ const userSchema = new mongoose.Schema({
   ],
 }, { timestamps: true });
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model('users', userSchema);
 module.exports = User;

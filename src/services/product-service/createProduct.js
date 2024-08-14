@@ -27,19 +27,6 @@ async function createProduct(reqData) {
         await secondLevel.save();
     }
 
-    // Check and create third level category
-    let thirdLevel = await Category.findOne({
-        name: reqData.thirdLevelCategory,
-        parentCategory: secondLevel._id
-    });
-    if (!thirdLevel) {
-        thirdLevel = new Category({
-            name: reqData.thirdLevelCategory,
-            parentCategory: secondLevel._id,
-            level: 3
-        });
-        await thirdLevel.save();
-    }
 
     // Create the product
     const product = new Product({
@@ -53,7 +40,7 @@ async function createProduct(reqData) {
         price: reqData.price,
         sizes: reqData.sizes,
         quantity: reqData.quantity,
-        category: thirdLevel._id,
+        category: secondLevel._id,
     });
 
     return await product.save();

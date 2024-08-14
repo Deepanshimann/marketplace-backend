@@ -3,57 +3,115 @@ const Order = require('../../models/order-model');
 const OrderItem = require('../../models/orderitem-model');
 const thirdCartService = require("../cart-services/findUserCart");
 
-async function createOrder(user, shippingAddress) {
-    try {
-        let address;
+// async function createOrder(user, shippAddress) {
+//     let address;
+//     if (shippAddress._id) {
+//       let existedAddress = await Address.findById(shippAddress._id);
+//       address = existedAddress;
+//     } else {
+//       address = new Address(shippAddress);
+//       address.user = user;
+//       await address.save();
+  
+//       user.addresses.push(address);
+//       await user.save();
+//     }
+  
+//     const cart = await thirdCartService.findUserCart(user._id);
+//     const orderItems = [];
+  
+//     for (const item of cart.cartItems) {
+//       const orderItem = new OrderItem({
+//         price: item.price,
+//         product: item.product,
+//         quantity: item.quantity,
+//         size: item.size,
+//         userId: item.userId,
+//         discountedPrice: item.discountedPrice,
+//       });
+  
+//       const createdOrderItem = await orderItem.save();
+//       orderItems.push(createdOrderItem);
+//     }
+  
+//     const createdOrder = new Order({
+//       user,
+//       orderItems,
+//       totalPrice: cart.totalPrice,
+//       totalDiscountedPrice: cart.totalDiscountedPrice,
+//       discount: cart.discount,
+//       totalItem: cart.totalItem,
+//       shippingAddress: address,
+//       orderDate: new Date(),
+//       orderStatus: "PENDING", // Assuming OrderStatus is a string enum or a valid string value
+//       "paymentDetails.status": "PENDING", // Assuming PaymentStatus is nested under 'paymentDetails'
+//       createdAt: new Date(),
+//     });
+  
+//     const savedOrder = await createdOrder.save();
+  
+//     // for (const item of orderItems) {
+//     //   item.order = savedOrder;
+//     //   await item.save();
+//     // }
+  
+//     return savedOrder;
+//   }
 
-        // Check if shipping address already exists
-        if (shippingAddress._id) {
-            address = await Address.findById(shippingAddress._id);
-        } else {
-            // Create a new address if it does not exist
-            address = new Address(shippingAddress);
-            address.user = user._id;
-            await address.save();
+// module.exports = { createOrder };
+async function createOrder(user, shippAddress) {
+    let address;
+    if (shippAddress._id) {
+        let existedAddress = await Address.findById(shippAddress._id);
+        address = existedAddress;
+    } else {
+        address = new Address(shippAddress);
+        address.user = user;
+        await address.save();
+
+        // Initialize the addresses array if it is undefined
+        if (!user.addresses) {
+            user.addresses = [];
         }
 
-        // Find the user's cart
-        const cart = await thirdCartService.findUserCart(user._id);
-        if (!cart) {
-            throw new Error('Cart not found for user');
-        }
-
-        // Create order items from cart items
-        const orderItems = await Promise.all(cart.cartItems.map(async (cartItem) => {
-            const orderItem = new OrderItem({
-                product: cartItem.product,
-                quantity: cartItem.quantity,
-                price: cartItem.price,
-                discountedPrice: cartItem.discountedPrice,
-                size: cartItem.size,
-                userId: user._id
-            });
-            return await orderItem.save();
-        }));
-
-        // Create the order
-        const order = new Order({
-            user: user._id,
-            orderItems: orderItems.map(item => item._id),
-            shippingAddress: address._id,
-            totalPrice: cart.totalPrice,
-            totalDiscountedPrice: cart.totalDiscountedPrice,
-            discount: cart.discount,
-            totalItem: cart.totalItem,
-            orderStatus: 'PENDING'
-        });
-
-        const savedOrder = await order.save();
-        return savedOrder;
-    } catch (error) {
-        console.error("Error creating order: ", error);
-        throw error;
+        user.addresses.push(address);
+        await user.save();
     }
-}
 
+    const cart = await thirdCartService.findUserCart(user._id);
+    const orderItems = [];
+
+    for (const item of cart.cartItems) {
+        const orderItem = new OrderItem({
+            price: item.product.price,
+            product: item.product._id,
+            quantity: item.quantity,
+            size: item.size,
+            userId: item.userId,
+            discountedPrice: item.product.discountedPrice,
+        });
+console.log(orderItem);
+
+        const createdOrderItem = await orderItem.save();
+        orderItems.push(createdOrderItem);
+    }
+
+    const createdOrder = new Order({
+        user,
+        orderItems,
+        totalPrice: cart.totalPrice,
+        totalDiscountedPrice: cart.totalDiscountedPrice,
+        discount: cart.discount,
+        totalItem: cart.totalItem,
+        shippAddress: address,
+        orderDate: new Date(),
+        orderStatus: "PENDING",
+        "paymentDetails.status": "PENDING",
+        createdAt: new Date(),
+    });
+
+    const savedOrder = await createdOrder.save();
+
+    return savedOrder;
+}
 module.exports = { createOrder };
