@@ -85,16 +85,24 @@ async function getAllProducts(reqQuery) {
       pageSize,
     } = reqQuery;
     (pageSize = pageSize || 10), (pageNumber = pageNumber || 1);
+
+  // Initialize query
     let query = Product.find().populate("category");
   
-  
-    // if (category) {
-    //   const existCategory = await Category.findOne({ name: category });
-    //   if (existCategory)
-    //     query = query.where("category").equals(existCategory._id);
-    //   else return { content: [], currentPage: 1, totalPages:0 };
-    // }
-  
+  //   if (category) {
+  //     const existCategory = await Category.findOne({ name: category });
+  //     console.log('Found Category:', existCategory);
+  //     if (existCategory) {
+  //         query = query.where("category").equals(existCategory._id);
+  //         console.log('Query after applying category:', query);
+  //     } else {
+  //         return { content: [], currentPage: 1, totalPages: 0 };
+  //     }
+  // }
+   
+
+
+
     if (color) {
       const colorSet = new Set(color.split(",").map(color => color.trim().toLowerCase()));
       const colorRegex = colorSet.size > 0 ? new RegExp([...colorSet].join("|"), "i") : null;
@@ -102,19 +110,19 @@ async function getAllProducts(reqQuery) {
       console.log("color",color);
     }
   
-    // if (sizes) {
-    //   const sizesSet = new Set(sizes);
+    if (sizes) {
+      const sizesSet = new Set(sizes);
       
-    //   query = query.where("sizes.name").in([...sizesSet]);
-    // }
+      query = query.where("sizes.name").in([...sizesSet]);
+    }
   
-    // if (minPrice && maxPrice) {
-    //   query = query.where("discountedPrice").gte(minPrice).lte(maxPrice);
-    // }
+    if (minPrice && maxPrice) {
+      query = query.where("discountedPrice").gte(minPrice).lte(maxPrice);
+    }
   
-    // if (minDiscount) {
-    //   query = query.where("discountPercent").gt(minDiscount);
-    // }
+    if (minDiscount) {
+      query = query.where("discountPercent").gt(minDiscount);
+    }
   
     if (stock) {
       if (stock === "in_stock") {
