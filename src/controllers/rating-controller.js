@@ -1,25 +1,27 @@
+
 const ratingService = require('../services/rating-service');
 
-const createRating = async (req, res) => {
-    const user = req.user;
-    try {
-        const rating = await ratingService.createRating(req.body, user);
-        return res.status(201).send(rating);
-    } catch (error) {
-        return res.status(500).send({ error: error.message });
-    }
+const createRating= (req, res) => {
+  try {
+    const user = req.user
+    const reqBody = req.body;
+    
+    const rating = ratingService.createRating(reqBody, user);
+    
+    res.status(202).json(rating);
+  } catch (error) {
+    res.status(500).json({ error: 'Something went wrong' });
+  }
 };
 
-const getProductRating = async (req, res) => {
-    try {
-        const ratings = await ratingService.getProductRating(req.params.productId);
-        return res.status(200).send(ratings);
-    } catch (error) {
-        return res.status(500).send({ error: error.message });
-    }
+const getProductRating=async (req, res) => {
+  try {
+    const productId = req.params.productId;
+    const ratings =await ratingService.getProductRating(productId);
+    res.status(200).json(ratings);
+  } catch (error) {
+    res.status(500).json({ error: 'Something went wrong' });
+  }
 };
 
-module.exports = {
-    createRating,
-    getProductRating,
-};
+module.exports = {getProductRating,createRating}

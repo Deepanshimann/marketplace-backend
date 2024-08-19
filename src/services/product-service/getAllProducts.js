@@ -110,19 +110,19 @@ async function getAllProducts(reqQuery) {
       console.log("color",color);
     }
   
-    if (sizes) {
-      const sizesSet = new Set(sizes);
+    // if (sizes) {
+    //   const sizesSet = new Set(sizes);
       
-      query = query.where("sizes.name").in([...sizesSet]);
-    }
+    //   query = query.where("sizes.name").in([...sizesSet]);
+    // }
   
-    if (minPrice && maxPrice) {
-      query = query.where("discountedPrice").gte(minPrice).lte(maxPrice);
-    }
+    // if (minPrice && maxPrice) {
+    //   query = query.where("discountedPrice").gte(minPrice).lte(maxPrice);
+    // }
   
-    if (minDiscount) {
-      query = query.where("discountPercent").gt(minDiscount);
-    }
+    // if (minDiscount) {
+    //   query = query.where("discountPercent").gt(minDiscount);
+    // }
   
     if (stock) {
       if (stock === "in_stock") {

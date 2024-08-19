@@ -1,49 +1,39 @@
-const Review = require('../models/review-model');
-const productService = require('./product-service/createProduct');
+const Review = require("../models/review-model.js");
+const productService=require("../services/product-service/createProduct.js")
 
 async function createReview(reqData, user) {
-    try {
-        // Find the product by its ID
-        const product = await productService.findProductById(reqData.productId);
-        if (!product) {
-            throw new Error("Product not found: " + reqData.productId);
-        }
+  // console.log("req data ",reqData)
+  const product = await productService.findProductById(reqData.productId);
 
-        // Create a new review
-        const review = new Review({
-            user: user._id,
-            product: product._id,
-            review: reqData.review,
-            createdAt: new Date(),
-        });
-
-        // Save the review
-        const savedReview = await review.save();
-        return savedReview;
-    } catch (error) {
-        console.error("Error creating review:", error);
-        throw new Error("Error creating review: " + error.message);
-    }
+  if(!product){
+    throw new Error("product not found with id ", reqData.productId)
+  }
+  
+  const review = new Review({
+    user: user._id,
+    product: product._id,
+    review: reqData.review,
+    createdAt: new Date(),
+  });
+  
+  await product.save();
+  return await review.save();
 }
 
 async function getAllReview(productId) {
-    try {
-        // Find the product by its ID
-        const product = await productService.findProductById(productId);
-        if (!product) {
-            throw new Error("Product not found: " + productId);
-        }
+  const product = await productService.findProductById(productId);
 
-        // Get all reviews for the product
-        const reviews = await Review.find({ product: productId }).populate('user');
-        return reviews;
-    } catch (error) {
-        console.error("Error getting product reviews:", error);
-        throw new Error("Error getting product reviews: " + error.message);
-    }
+  if(!product){
+    throw new Error("product not found with id ", productId)
+  }
+  
+  const reviews = await Review.find({ product: productId }).populate("user");
+  console.log("reviews ",reviews)
+  return reviews
 }
 
+
 module.exports = {
-    createReview,
-    getAllReview,
+  createReview,
+  getAllReview,
 };
