@@ -1,8 +1,8 @@
 const Stripe = require('stripe');
-require('dotenv').config();
 
-// Load Stripe secret key from environment variables
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-const stripe = Stripe(stripeSecretKey);
+// Directly embed your secret key here (replace 'your_secret_key_here' with your actual key)
+const stripeSecretKey = 'sk_test_51PpJQtRsZlg6HjHGuLAigOMFCNEVjhLVyPImSTnwuyUSY1LtY48m1MrWTEjlJSbPpuNyLNtHCXatTWXEY8ZHcu7B00OqcCfnEl';
+
+const stripe = new Stripe(stripeSecretKey);
 
 module.exports = stripe;
