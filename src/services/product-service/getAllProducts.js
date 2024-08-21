@@ -116,9 +116,9 @@ async function getAllProducts(reqQuery) {
     //   query = query.where("sizes.name").in([...sizesSet]);
     // }
   
-    // if (minPrice && maxPrice) {
-    //   query = query.where("discountedPrice").gte(minPrice).lte(maxPrice);
-    // }
+    if (minPrice && maxPrice) {
+      query = query.where("discountedPrice").gte(minPrice).lte(maxPrice);
+    }
   
     // if (minDiscount) {
     //   query = query.where("discountPercent").gt(minDiscount);

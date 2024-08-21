@@ -29,8 +29,9 @@ const AddressSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Postcode is required'],
         trim: true,
-        match: [/^\d{5}$/, 'Please enter a valid postcode'],
+        match: [/^[A-Za-z]{2}\d{1}\s\d{1}[A-Za-z]{2}$/, 'Please enter a valid postcode']
     },
+    
     user: {
         type: mongoose.Schema.ObjectId,
         ref: "users"

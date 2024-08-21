@@ -57,6 +57,7 @@ const productSchema = new mongoose.Schema({
   category: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'categories',
+    required: true, // Ensures every product has a category
   }, 
   createdAt: {
     type: Date,
