@@ -27,11 +27,13 @@ const authenticate = async (req, res, next) => {
       userId = jwtProvider.getUserIdFromToken(token);
       // console.log(`[${requestId}] Extracted user ID from token:`, userId);
     } catch (error) {
+      console.log("0:");
       console.log(`[${requestId}] Failed to extract user ID from token:`, error.message);
       return res.status(401).send({ message: "Invalid token" });
     }
 
     if (!userId) {
+      console.log("1:");
       console.log(`[${requestId}] Failed to extract user ID from token`);
       return res.status(401).send({ message: "Invalid token" });
     }
