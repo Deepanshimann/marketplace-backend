@@ -62,6 +62,7 @@ const createMultipleProducts = async (req, res) => {
 const getAllProducts = async (req, res) => {
     try {
         console.log("getAllProducts called");
+        console.log("get call");
         const products = await secondProductService.getAllProducts(req.query);
         return res.status(201).send(products);
     } catch (error) {

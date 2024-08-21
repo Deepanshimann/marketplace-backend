@@ -84,21 +84,24 @@ async function getAllProducts(reqQuery) {
       pageNumber,
       pageSize,
     } = reqQuery;
-    (pageSize = pageSize || 10), (pageNumber = pageNumber || 1);
+
+    console.log("category: ", category);
+    // (pageSize = pageSize || 10), (pageNumber = pageNumber || 1);
 
   // Initialize query
     let query = Product.find().populate("category");
   
-  //   if (category) {
-  //     const existCategory = await Category.findOne({ name: category });
-  //     console.log('Found Category:', existCategory);
-  //     if (existCategory) {
-  //         query = query.where("category").equals(existCategory._id);
-  //         console.log('Query after applying category:', query);
-  //     } else {
-  //         return { content: [], currentPage: 1, totalPages: 0 };
-  //     }
-  // }
+    if (category) {
+      console.log("category: ", category);
+      const existCategory = await Category.findOne({ name: category });
+      console.log('Found Category:', existCategory);
+      if (existCategory) {
+          query = query.where("category").equals(existCategory._id);
+          console.log('Query after applying category:', query);
+      } else {
+          return { content: [], currentPage: 1, totalPages: 0 };
+      }
+  }
    
 
 
