@@ -46,4 +46,16 @@ app.use("/api/ratings",ratingRouter);
 const adminOrderRoutes=require("./Routes/adminOrderRoutes");
 app.use("/api/admin/orders",adminOrderRoutes);
 
+app.post('/feedback', (req, res) => {
+    const { emoji, rating, comments } = req.body;
+
+    console.log('Received feedback:');
+    console.log('Emoji:', emoji);
+    console.log('Rating:', rating);
+    console.log('Comments:', comments);
+
+    // Here you can save the feedback to a database or send it via email
+    res.status(200).send({ message: 'Feedback received' });
+});
+
 module.exports={app};
